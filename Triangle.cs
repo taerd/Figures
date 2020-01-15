@@ -9,8 +9,9 @@ namespace Figures
     class Triangle : IComparable<Triangle>
     {
         private Point2D A, B, C;
-        public double Perimeter {get;set;}
-        public double Square { get; set; }
+        public double Perimeter {get; protected set;}
+        public double[] Sides { get; protected set;}
+        public double Square { get; protected set; }
         public Triangle (Point2D A,Point2D B,Point2D C)
         {
             if (TriangleExist(A,B,C))
@@ -20,6 +21,8 @@ namespace Figures
                 double AtoB = A.DistanceTo(B);
                 double BtoC = B.DistanceTo(C);
                 double CtoA = C.DistanceTo(A);
+                Sides = new double[3];
+                Sides[0] = AtoB; Sides[1] = BtoC; Sides[2] = CtoA;
                 Perimeter = AtoB + BtoC + CtoA;
                 Square = Math.Sqrt((Perimeter / 2) * ((Perimeter / 2) - AtoB) * ((Perimeter / 2) - BtoC) * ((Perimeter / 2) - CtoA));
             }
@@ -65,6 +68,7 @@ namespace Figures
                    + A.ToString() + '\n'
                    + B.ToString() + '\n'
                    + C.ToString() + '\n'
+                   +"Sides : " + Sides[0].ToString() + " " + Sides[1].ToString() + " " + Sides[2].ToString() + '\n'
                    + "Perimeter: " + Perimeter + '\n'
                    + "Square: " + Square + "}";
         }

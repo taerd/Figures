@@ -11,17 +11,26 @@ namespace Figures
         protected Point2D A, B, C, D;
         protected double [] Basis;
         protected double [] Lateral;
-        public double Perimeter { get; set; }
-        public double Square { get; set; }//ошибся в вычислении площади
+        public double Perimeter { get; protected set; }
+        public double Square { get; protected set; }
         public Trapezium(Point2D A,Point2D B,Point2D C,Point2D D)
         {
             if (TrapeziumExists(A,B,C,D))
             {
                 this.A = A;this.B = B;this.C = C;this.D = D;
                 Perimeter = Basis[0] + Basis[1] + Lateral[0] + Lateral[1];
-                Square = ( (Basis[0]+Basis[1]) / 2 ) * Math.Sqrt( Lateral[0]*Lateral[0] - Math.Pow( ( ( (Basis[0] - Basis[1])*(Basis[0] - Basis[1]) + (Lateral[0] * Lateral[0]) - (Lateral[1] * Lateral[1]) ) / 2 * Math.Abs(Basis[0] - Basis[1]) ),2 ) );
+                if (Basis[0] - Basis[1] != 0)
+                {
+                    Square = ((Basis[0] + Basis[1]) / 2) * Math.Sqrt((Lateral[0] * Lateral[0]) - Math.Pow((((Basis[0] - Basis[1]) * (Basis[0] - Basis[1]) + (Lateral[0] * Lateral[0]) - (Lateral[1] * Lateral[1])) / (2 * (Basis[0] - Basis[1]))), 2));
+                }
+                else//когда ромб,прямоугольник,квадрат
+                {
+                    double [] ab = A.GetVector(B);
+                    double [] ad = A.GetVector(D);
+                    Square = Basis[0] * Basis[1] * Math.Sin(Math.Acos( (ab[0]*ad[0] + ab[1]*ad[1] ) / ( Math.Sqrt(ab[0]*ab[0] + ab[1]*ab[1]) * Math.Sqrt(ad[0]*ad[0] + ad[1]*ad[1]) ) ) );
+                } 
             }
-            else throw new Exception($"Cant Create Trapezium on points A({A.Coordinates[0]},{A.Coordinates[1]}) , B({B.Coordinates[0]},{B.Coordinates[1]}) , C({C.Coordinates[0]},{C.Coordinates[1]}) , D({D.Coordinates[0]},{D.Coordinates[1]})");
+            else throw new Exception($"Cant create trapezium on points A({A.Coordinates[0]},{A.Coordinates[1]}) , B({B.Coordinates[0]},{B.Coordinates[1]}) , C({C.Coordinates[0]},{C.Coordinates[1]}) , D({D.Coordinates[0]},{D.Coordinates[1]})");
         }
         private bool TrapeziumExists(Point2D A, Point2D B, Point2D C, Point2D D)
         {
@@ -73,6 +82,7 @@ namespace Figures
                    + B.ToString() + '\n'
                    + C.ToString() + '\n'
                    + D.ToString() + '\n'
+                   + "Sides : " + Basis[0].ToString() + "  " + Basis[1].ToString() + "  " + Lateral[0].ToString() + "  " + Lateral[1].ToString() + "  " + '\n'
                    + "Perimeter: " + Perimeter + '\n'
                    + "Square: " + Square + "}";
         }
